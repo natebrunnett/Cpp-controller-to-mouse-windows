@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <Xinput.h>
 
+
 // Link with Xinput library
 #pragma comment(lib, "Xinput.lib")
 
@@ -48,6 +49,11 @@ int main() {
     XINPUT_STATE state;
     DWORD result;
     bool leftClickDown = false;
+    // Variables to track the state of arrow keys
+    bool upArrowDown = false;
+    bool downArrowDown = false;
+    bool leftArrowDown = false;
+    bool rightArrowDown = false;
 
     std::cout << "Controller Mouse Control - Press Ctrl+C to exit\n";
 
@@ -74,8 +80,8 @@ int main() {
                 dy = static_cast<double>(thumbY) * .0003; // Scale for mouse movement
             }
 
+            //Right Trigger
             if (state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) {
-                // Increase mouse speed if left trigger is pressed
                 if (leftClickDown == false) {
                     leftClickDown = true;
                     INPUT input;
@@ -176,25 +182,61 @@ int main() {
             }
 
             // Check D-pad directions
+            
+            // Up arrow
             if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) {
-                keybd_event(VK_UP, 0, 0, 0); // Press arrow up key
-                Sleep(50); // Add a small delay
-                keybd_event(VK_UP, 0, KEYEVENTF_KEYUP, 0); // Release arrow up key
+                if (!upArrowDown) {
+                    upArrowDown = true;
+                    keybd_event(VK_UP, 0, 0, 0); // Press arrow up key
+                }
             }
+            else {
+                if (upArrowDown) {
+                    upArrowDown = false;
+                    keybd_event(VK_UP, 0, KEYEVENTF_KEYUP, 0); // Release arrow up key
+                }
+            }
+
+            // Down arrow
             if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
-                keybd_event(VK_DOWN, 0, 0, 0); // Press arrow down key
-                Sleep(50); // Add a small delay
-                keybd_event(VK_DOWN, 0, KEYEVENTF_KEYUP, 0); // Release arrow down key
+                if (!downArrowDown) {
+                    downArrowDown = true;
+                    keybd_event(VK_DOWN, 0, 0, 0); // Press arrow down key
+                }
             }
+            else {
+                if (downArrowDown) {
+                    downArrowDown = false;
+                    keybd_event(VK_DOWN, 0, KEYEVENTF_KEYUP, 0); // Release arrow down key
+                }
+            }
+
+            // Left arrow
             if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
-                keybd_event(VK_LEFT, 0, 0, 0); // Press arrow left key
-                Sleep(50); // Add a small delay
-                keybd_event(VK_LEFT, 0, KEYEVENTF_KEYUP, 0); // Release arrow left key
+                if (!leftArrowDown) {
+                    leftArrowDown = true;
+                    keybd_event(VK_LEFT, 0, 0, 0); // Press arrow left key
+                }
             }
+            else {
+                if (leftArrowDown) {
+                    leftArrowDown = false;
+                    keybd_event(VK_LEFT, 0, KEYEVENTF_KEYUP, 0); // Release arrow left key
+                }
+            }
+
+            // Right arrow
             if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) {
-                keybd_event(VK_RIGHT, 0, 0, 0); // Press arrow right key
-                Sleep(50); // Add a small delay
-                keybd_event(VK_RIGHT, 0, KEYEVENTF_KEYUP, 0); // Release arrow right key
+                if (!rightArrowDown) {
+                    rightArrowDown = true;
+                    keybd_event(VK_RIGHT, 0, 0, 0); // Press arrow right key
+                }
+            }
+            else {
+                if (rightArrowDown) {
+                    rightArrowDown = false;
+                    keybd_event(VK_RIGHT, 0, KEYEVENTF_KEYUP, 0); // Release arrow right key
+                }
             }
 
             // Delay to avoid flooding
